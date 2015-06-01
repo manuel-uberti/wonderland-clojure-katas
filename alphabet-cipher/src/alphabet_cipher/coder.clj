@@ -3,7 +3,7 @@
 (def alphabet "abcdefghijklmnopqrstuvwxyz")
 (def alphabet-map {:a 0  :b 1  :c 2  :d 3
                    :e 4  :f 5  :g 6  :h 7
-                   :i 8  :j 9 :k 10 :l 11
+                   :i 8  :j 9  :k 10 :l 11
                    :m 12 :n 13 :o 14 :p 15
                    :q 16 :r 17 :s 18 :t 19
                    :u 20 :v 21 :w 22 :x 23
@@ -27,16 +27,24 @@
         l (count m)]
     (take l (flatten (repeat s)))))
 
-(defn string-to-keys [s]
+;; From string to a sequence of keywords
+(defn string->keys [s]
   (map keyword (map str (seq s))))
 
 (defn get-encoded-char [x y]
-  (str (nth (rotate (x alphabet-map) alphabet) (y alphabet-map))))
+  (nth (rotate (x alphabet-map) alphabet) (y alphabet-map)))
+
+(defn get-decoded-char [x y]
+  (let [rs (map str (rotate (x alphabet-map) alphabet))
+        i (.indexOf rs y)]
+    (nth alphabet i)))
 
 (defn encode [keyword message]
   (apply str (map get-encoded-char
-                  (string-to-keys (repeat-keyword keyword message))
-                  (string-to-keys (seq message)))))
+                  (string->keys (repeat-keyword keyword message))
+                  (string->keys (seq message)))))
 
 (defn decode [keyword message]
-  "decodeme")
+  (apply str (map get-decoded-char
+                  (string->keys (repeat-keyword keyword message))
+                  (map str (seq message)))))
