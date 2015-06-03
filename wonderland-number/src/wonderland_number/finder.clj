@@ -17,5 +17,3 @@
                (same-digits? n s))
         n
         (recur (inc n))))))
-
-(wonderland-number)
